@@ -16,17 +16,19 @@ NEWSPIDER_MODULE = 'hn_scraper.spiders'
 #--------------------------------------------------------------------------
 # Frontier Settings
 #--------------------------------------------------------------------------
-SPIDER_MIDDLEWARES = {}
-DOWNLOADER_MIDDLEWARES = {}
-SPIDER_MIDDLEWARES.update({
-    'frontera.contrib.scrapy.middlewares.schedulers.SchedulerSpiderMiddleware': 999
-}, )
-DOWNLOADER_MIDDLEWARES.update({
-    'frontera.contrib.scrapy.middlewares.schedulers.SchedulerDownloaderMiddleware':
-    999
-})
-SCHEDULER = 'frontera.contrib.scrapy.schedulers.frontier.FronteraScheduler'
-FRONTERA_SETTINGS = 'hn_scraper.frontera_settings'
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
-#USER_AGENT = 'hn_scraper (+http://www.yourdomain.com)'
+# USER_AGENT = 'hn_scraper (+http://www.yourdomain.com)'
+
+
+DOWNLOAD_HANDLERS = {
+#    'http': 'kafka_downloader.KafkaDownloadHandler',
+    'https': 'kafka_downloader.KafkaDownloadHandler',
+}
+
+KAFKA_LOCATION = 'localhost:9092'
+KAFKA_RESPONSES_TOPIC = 'responses'
+KAFKA_REQUESTS_TOPIC = 'requests'
+KAFKA_CONSUMER_GROUP = 'scrapy-cloud-downloader'
+
+LOG_LEVEL='INFO'

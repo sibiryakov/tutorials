@@ -23,9 +23,13 @@ class HackernewsSpider(Spider):
             return extracted[0]
         return default
 
+    def req_cb(self, response):
+        print "Hey"
+        return self.parse(response)
+
     def parse(self, response):
         for link in self.link_extractor.extract_links(response):
-            request = Request(url=link.url)
+            request = Request(url=link.url, callback=self.req_cb)
             request.meta.update(link_text=link.text)
             yield request
 
