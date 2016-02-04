@@ -1,21 +1,30 @@
 # -*- coding: utf-8 -*-
-import scrapy
+from scrapy import signals, exceptions
 from scrapy.http import Request
 from scrapy.spider import Spider
 from scrapy.contrib.linkextractors.sgml import SgmlLinkExtractor
 from scrapy.selector import Selector
-
 from hn_scraper.items import HnArticleItem
 
 
 class HackernewsSpider(Spider):
     name = "HackerNews"
     allowed_domains = ["news.ycombinator.com"]
-    start_urls = ('https://news.ycombinator.com/', )
+    #start_urls = ('https://news.ycombinator.com/', )
 
     link_extractor = SgmlLinkExtractor(
         allow=('news', ),
         restrict_xpaths=('//a[text()="More"]', ))
+
+    @classmethod
+    def from_crawler(cls, crawler, *args, **kwargs):
+        spider = cls(*args, **kwargs)
+        spider._set_crawler(crawler)
+        crawler.signals.connect(spider.dont_close_on_idle, signals.spider_idle)
+        return spider
+
+    def dont_close_on_idle(self):
+        raise exceptions.DontCloseSpider
 
     def extract_one(self, selector, xpath, default=None):
         extracted = selector.xpath(xpath).extract()
