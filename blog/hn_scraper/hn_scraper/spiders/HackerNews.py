@@ -10,7 +10,7 @@ from hn_scraper.items import HnArticleItem
 class HackernewsSpider(Spider):
     name = "HackerNews"
     allowed_domains = ["news.ycombinator.com"]
-    #start_urls = ('https://news.ycombinator.com/', )
+    start_urls = ('https://news.ycombinator.com/', )
 
     link_extractor = SgmlLinkExtractor(
         allow=('news', ),
@@ -33,7 +33,7 @@ class HackernewsSpider(Spider):
         return default
 
     def req_cb(self, response):
-        print "Hey"
+        print "CB is hit!"
         return self.parse(response)
 
     def parse(self, response):
